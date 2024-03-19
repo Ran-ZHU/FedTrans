@@ -31,10 +31,6 @@ if __name__ == '__main__':
 	conf['num_classes'], conf['model_name'], conf['num_models'], conf['metric'], conf['record_file_name'],\
 		conf['client_info_file'], conf['em_info_file'] = get_other_conf(conf)
 
-	num_synthetic_client_noisy = conf['num_synthetic_client_noisy']
-	num_synthetic_client_clean = conf['num_synthetic_client_clean']
-	num_synthetic_clients = num_synthetic_client_noisy + num_synthetic_client_clean
-
 	# load dataset and split users
 	if conf['data'] == 'fashionmnist':
 		train_dataset = datasets.FashionMNIST('./data/fashionmnist/', train=True, download=True, transform=transforms.ToTensor())
@@ -56,6 +52,7 @@ if __name__ == '__main__':
 		exit('Error: unrecognized dataset')
 
 	# construct auxiliary data sampled from evaluation dataset
+	num_synthetic_clients = int(2 * conf['num_pairs'])
 	dict_synthetic_clients, test_indices, auxiliary_data_indices = \
 		auxi_data_for_synthetic_clients(conf, eval_dataset, num_synthetic_clients)
 
@@ -86,9 +83,9 @@ if __name__ == '__main__':
 
 	# initialize synthetic clients
 	synthetic_clients = []
-	for c_l_0 in range(num_synthetic_client_noisy):
+	for c_l_0 in range(conf['num_pairs']):
 		synthetic_clients.append(Synthetic_clients(conf, eval_dataset, dict_synthetic_clients, auxiliary_data_indices, c_l_0, label='0')) # label 0 means noisy clients
-	for c_l_1 in range(num_synthetic_client_noisy, num_synthetic_client_noisy+num_synthetic_client_clean):
+	for c_l_1 in range(conf['num_pairs'], num_synthetic_clients):
 		synthetic_clients.append(Synthetic_clients(conf, eval_dataset, dict_synthetic_clients, auxiliary_data_indices, c_l_1, label='1')) # label 1 means clean clients
 
 
@@ -130,7 +127,7 @@ if __name__ == '__main__':
 			# print the intermediate info
 			if candidates_num[idx] < conf['num_models']:
 				print('>>>Client %d begin training>>>' % candidates_num[idx])
-			elif (candidates_num[idx]-conf['num_models']) < num_synthetic_client_noisy:
+			elif (candidates_num[idx]-conf['num_models']) < conf['num_pairs']:
 				print('>>>Synthetic noisy client %d begin training>>>' % candidates_num[idx])
 			else:
 				print('>>>Synthetic clean client %d begin training>>>' % candidates_num[idx])
@@ -176,10 +173,10 @@ if __name__ == '__main__':
 				else:
 					single_round[candidates_num[i + num_synthetic_clients]] = 0  # 1 means corresponding clients are noisy
 
-			for i in range(num_synthetic_client_noisy):
+			for i in range(conf['num_pairs']):
 				single_round[conf['num_models'] + i] = 0
-			for j in range(num_synthetic_client_clean):
-				single_round[conf['num_models'] + num_synthetic_client_noisy + j] = 1
+			for j in range(conf['num_pairs']):
+				single_round[conf['num_models'] + conf['num_pairs'] + j] = 1
 		elif conf["metric"] == "loss":
 			print(">>>>>>>>>>>>>>Using Loss as metric")
 			# using loss as metrics
@@ -193,13 +190,13 @@ if __name__ == '__main__':
 				else:
 					single_round[candidates_num[i+num_synthetic_clients]] = 0
 
-			for i in range(num_synthetic_client_noisy):
+			for i in range(conf['num_pairs']):
 				single_round[conf['num_models'] + i] = 0
-			for j in range(num_synthetic_client_clean):
-				single_round[conf['num_models'] + num_synthetic_client_noisy + j] = 1
+			for j in range(conf['num_pairs']):
+				single_round[conf['num_models'] + conf['num_pairs'] + j] = 1
 		round_reputation.append(single_round)
 
-		# obtain the input of performance-based inference
+		# obtain the input of weight-based discriminator
 		All_features = np.array(All_features).reshape(len(candidates_num), -1)
 		All_features = preprocessing.scale(All_features)
 
@@ -255,10 +252,10 @@ if __name__ == '__main__':
 			else:
 				update_round[candidates_num[i+num_synthetic_clients]] = 0
 
-		for c_0 in range(num_synthetic_client_noisy):
+		for c_0 in range(conf['num_pairs']):
 			update_round[conf['num_models']+c_0] = 0
-		for c_1 in range(num_synthetic_client_clean):
-			update_round[conf['num_models']+num_synthetic_client_noisy+c_1] = 1
+		for c_1 in range(conf['num_pairs']):
+			update_round[conf['num_models']+conf['num_pairs']+c_1] = 1
 
 		round_reputation[-1] = update_round
 
@@ -281,8 +278,8 @@ if __name__ == '__main__':
 
 			record_global_model.append([e+1, Val_acc, Val_loss, Test_acc, Test_loss, conf['data'], conf['data_distribution'], conf['model_name'],
 			                            conf['num_models'], conf['k'], conf['noisy_client_rate'], conf['noise_rate'], conf['noise_type'],
-			                            conf['auxiliary_data_len'], conf['metric'], conf['theta_threshold'], conf['num_synthetic_client_noisy'],
-			                            conf['num_synthetic_client_clean'], conf['lr'], conf['batch_size'], conf['local_epochs']])
+			                            conf['auxiliary_data_len'], conf['metric'], conf['theta_threshold'], conf['num_pairs'],
+			                            conf['lr'], conf['batch_size'], conf['local_epochs']])
 			print('>>>>>>>Time Cost:', time() - time_begin)
 		else:
 			print ("Round %d is invalid\n" %(e + 1))
@@ -296,8 +293,7 @@ if __name__ == '__main__':
 			pd.DataFrame(record_global_model).to_csv(conf['record_file_name'], index=False,
 													header=['Round', 'Val_acc', 'Val_loss', 'Test_acc', 'Test_loss', 'Dataset', 'Data_distribution',
 													        'Model_name', 'Total_clients', 'Num_clients', 'Noisy_client_rate', 'Noise rate', 'Noise_type',
-													        'Auxiliary_data_len', 'Metric', 'Threshold', 'Num_synthetic_client_noisy',
-													        'Num_synthetic_client_clean', 'Lr', 'Batch_size', 'Local_epochs'])
+													        'Auxiliary_data_len', 'Metric', 'Threshold', 'Num_pairs', 'Lr', 'Batch_size', 'Local_epochs'])
 
 
 			with open(conf['client_info_file'], 'wb') as f:

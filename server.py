@@ -122,16 +122,15 @@ class Server(object):
 
 	def m_step(self, q_z_i_0, q_z_i_1, features, classifier, alpha, beta):
 		# prob_e_step = np.where(q_z_i_0 > 0.5, 0, 1)
-		theta_i, classifier, counter = self.nn_em.train_m_step(classifier, features, q_z_i_1, self.conf['steps'], self.conf['em_epochs'])
+		theta_i, classifier, counter = self.nn_em.train_m_step(classifier, features, q_z_i_1, self.conf['steps'], self.conf['m_epochs'])
 
 		return theta_i, classifier, counter
 
 	def aggragete_strategy(self, features, round_reputation, candidates_num):
 		input_dim = features.shape[1]
 		n_rounds = len(round_reputation)
-		n_clients = self.conf['k'] + self.conf['num_synthetic_client_noisy'] + self.conf['num_synthetic_client_clean']
-		client_0 = self.conf['num_synthetic_client_noisy']
-		client_1 = self.conf['num_synthetic_client_clean']
+		n_clients = int(self.conf['k'] + 2 * self.conf['num_pairs'])
+		client_0 = client_1 = self.conf['num_pairs']
 		y_train_0 = np.zeros((client_0, 1))
 		y_train_1 = np.ones((client_1, 1))
 		y_train = np.concatenate((y_train_0, y_train_1))
@@ -147,14 +146,14 @@ class Server(object):
 			classifier = tf.keras.models.load_model("./models_discriminator/classifier.h5")
 		else:
 			classifier = self.nn_em.define_nn(m=input_dim, n_neurons_1=self.conf['n_neurons_1'],
-			                                  n_neurons_2=self.conf['n_neurons_2'], learning_rate=self.conf['em_lr'])
+			                                  n_neurons_2=self.conf['n_neurons_2'], learning_rate=self.conf['m_lr'])
 
 		# initialize the discriminator using the info of synthetic clients
 		steps_it0 = 0
 		epsilon = 1e-4
 		theta_i = q_z_i_1.copy()
 		old_theta_i = np.zeros((n_clients, 1))
-		while (LA.norm(theta_i - old_theta_i) > epsilon) and (steps_it0 < self.conf['em_epochs']):
+		while (LA.norm(theta_i - old_theta_i) > epsilon) and (steps_it0 < self.conf['m_epochs']):
 			classifier.fit(features[:int(client_0+client_1)], y_train, epochs=self.conf['steps'], verbose=0)
 			theta_i_unlabeled = classifier.predict(features[len(y_train):])
 			theta_i = np.concatenate((y_train, theta_i_unlabeled))
@@ -170,10 +169,10 @@ class Server(object):
 		theta_i = np.ones((features.shape[0], 1))
 		time_0 = time()
 		# while em_step < self.conf['em_iterr'] and (LA.norm(theta_i - old_theta_i) > epsilon):
-		while em_step < self.conf['em_iterr']:
+		while em_step < self.conf['em_iter']:
 			# e-step
 			q_z_i_0, q_z_i_1, alpha, beta, e_counter = self.e_step(n_rounds, n_clients, q_z_i_0, q_z_i_1, sub_round_reputation, \
-														alpha, beta, theta_i, y_train=0, max_it=self.conf['e_iterr'])
+														alpha, beta, theta_i, y_train=0, max_it=self.conf['e_iter'])
 			e_step_counter_list.append(e_counter)
 			old_theta_i = theta_i.copy()
 
@@ -210,34 +209,6 @@ class Server(object):
 
 		for name, data in self.global_model.state_dict().items():
 			data.add_(weight_accumulator[name])
-
-	def model_aggregate_m(self, diff_record, total_num_clients):
-		total_samples = 0
-		for i in range(len(diff_record)):
-			total_samples += diff_record[i][1]
-
-		model_update = deepcopy(diff_record[0][0])
-		for layer in model_update.keys():
-			model_update[layer] = torch.mul(model_update[layer], diff_record[0][1])
-			for idx in range(1, total_num_clients):
-				model_update[layer] = torch.add(
-					model_update[layer],
-					diff_record[idx][0][layer],
-					alpha=diff_record[idx][1]
-				)
-			model_update[layer] = torch.div(model_update[layer], total_samples)
-
-		if self.hist is None:
-			self.hist = deepcopy(model_update)
-		else:
-			for layer in self.hist.keys():
-				self.hist[layer] = model_update[layer] + self.hist[layer] * self.conf['server_momentum']
-
-		for layer, weights in self.global_model.state_dict().items():
-			if weights.type() != self.hist[layer].type():
-				weights += self.hist[layer].to(torch.int64)
-			else:
-				weights += self.hist[layer]
 
 	def model_change(self, weight_accumulator):
 		for name, data in self.global_model.state_dict().items():

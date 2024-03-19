@@ -26,8 +26,8 @@ class Synthetic_clients(object):
 			self.client_label = "synthetic clean"
 
 		self.noisy_samples_id = np.random.choice(
-			int(len(self.val_indices) / (self.conf['num_synthetic_client_clean'] + self.conf['num_synthetic_client_noisy'])),
-			math.floor(len(self.val_indices) / (conf['num_synthetic_client_clean'] + conf['num_synthetic_client_noisy']) * self.noise_rate),
+			int(len(self.val_indices) / (2*self.conf['num_pairs'])),
+			math.floor(len(self.val_indices) / (2*self.conf['num_pairs']) * self.noise_rate),
 			replace=False)
 
 		# random flipping noise
