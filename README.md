@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # <h1 align="center"> FedTrans: Client-Transparent Utility Estimation for Robust Federated Learning</h1>
 
 
@@ -75,4 +74,3 @@ If our work is userful for your research, please consider citing:
 ```
 
 ```
->>>>>>> c75a14a (FedTrans)
