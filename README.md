@@ -68,3 +68,6 @@ description for each parameter defined in [conf.json](./utils/conf.json):
 
 [//]: # ()
 [//]: # (```)
+
+## Contact
+Feel free to contact authors or leave an issue if face with a problem when using this implementation.
