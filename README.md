@@ -74,7 +74,6 @@ booktitle={The Twelfth International Conference on Learning Representations},
 year={2024},
 url={https://openreview.net/forum?id=DRu8PMHgCh}
 }
-
 ```
 
 ## Contact
