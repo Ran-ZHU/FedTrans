@@ -1,19 +1,11 @@
-# FedTrans: Client-Transparent Utility Estimation for Robust Federated Learning
+<h1 align="center"> FedTrans: Client-Transparent Utility Estimation for Robust Federated Learning</h1>
 
- 
-[//]: # (<p align="center">)
-
-[//]: # (<a href="https://arxiv.org/abs/2310.05078"><img src="https://img.shields.io/badge/arxiv-2310.05078-silver" alt="Paper"></a>)
-
-[//]: # (<a href="https://iclr.cc/"><img src="https://img.shields.io/badge/Pub-ICLR'24-olive" alt="Pub"></a>)
-
-[//]: # (<a href="https://github.com/Ran-ZHU/FedTrans"><img src="https://img.shields.io/badge/-github-teal?logo=github" alt="github"></a>)
-
-[//]: # (</p>)
 
 This repository is the official implementation of "[ShuffleFL: Addressing Heterogeneity in Multi-Device Federated Learning](https://openreview.net/pdf?id=DRu8PMHgCh)"
 in the International Conference on Learning Representations (ICLR) 2024 
 ![Generic badge](https://img.shields.io/badge/code-official-green.svg)
+
+
 ## Introduction
 Federated Learning (FL) is an important privacy-preserving learning paradigm that plays an important role in the Intelligent Internet of Things. 
 Training a global model in FL, however, is vulnerable to the data noise across the clients. In this paper, we introduce **FedTrans**, a novel 
@@ -34,7 +26,7 @@ pip install -r requirements.txt
 
 ## How to run
 
-To train the model with non-IID dataset in this paper, run the command:
+To train the model using FedTrans proposed in this paper, run the command:
 ```
 python main.py
 ```
