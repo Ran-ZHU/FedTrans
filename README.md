@@ -58,16 +58,24 @@ description for each parameter defined in [conf.json](./utils/conf.json):
 | ` n_neurons_1, n_neurons_2` | number of neurons of hidden layers of discriminator     |
 | ` e_iterr`                  | number of iterations of performance-based inference     |
 | ` em_iterr`                 | number of iterations of variational EM                  |
+| ` em_iterr`                 | number of iterations of variational EM                  |
 
 
-[//]: # (## Citation)
+## Citation
 
-[//]: # (If our work is userful for your research, please consider citing:)
+If our work is userful for your research, please consider citing:
 
-[//]: # (```)
+```
+@inproceedings{
+yang2024fedtrans,
+title={FedTrans: Client-Transparent Utility Estimation for Robust Federated Learning},
+author={Mingkun Yang and Ran Zhu and Qing Wang and Jie Yang},
+booktitle={The Twelfth International Conference on Learning Representations},
+year={2024},
+url={https://openreview.net/forum?id=DRu8PMHgCh}
+}
 
-[//]: # ()
-[//]: # (```)
+```
 
 ## Contact
 Feel free to contact authors or leave an issue if face with a problem when using this implementation.
