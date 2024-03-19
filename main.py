@@ -12,10 +12,10 @@ from time import time
 from torchsummary import summary
 from sklearn import preprocessing
 from torchvision import transforms, datasets
-from server import *
-from client import *
+from src.server import *
+from src.client import *
 from utils.setup_utils import *
-from synthetic_clients import *
+from src.synthetic_clients import *
 from copy import deepcopy
 from utils.sampling import iid_partition, auxi_data_for_synthetic_clients, h2c_partition, dirichlet_distribution_fashion
 

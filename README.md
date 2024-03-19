@@ -1,4 +1,4 @@
-#<h1 align="center"> FedTrans: Client-Transparent Utility Estimation for Robust Federated Learning</h1>
+# FedTrans: Client-Transparent Utility Estimation for Robust Federated Learning
 
  
 [//]: # (<p align="center">)
