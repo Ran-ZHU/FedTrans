@@ -1,0 +1,5 @@
+python=3.7.16
+pytorch=2.2.1
+torchvision=0.17.1
+numpy=1.20.3
+scipy=1.5.4

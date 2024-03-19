@@ -1,0 +1,47 @@
+{
+	"data" : "cifar10",
+
+	"data_distribution": "h2c",
+
+	"global_epochs" : 500,
+
+	"local_epochs" : 5,
+
+	"k" : 20,
+
+	"batch_size" : 32,
+
+	"lr" : 0.01,
+
+	"noisy_client_rate": 0.3,
+
+	"noise_rate": "random",
+
+	"auxiliary_data_len": 200,
+
+	"num_synthetic_client_noisy": 1,
+
+	"num_synthetic_client_clean": 1,
+
+	"noise_type": "label_intra",
+
+	"theta_threshold": 0.5,
+
+	"em_epochs": 50,
+
+	"em_iterr": 20,
+
+	"e_iterr": 100,
+
+	"steps": 10,
+
+	"em_lr": 0.001,
+
+	"n_neurons_1": 128,
+
+	"n_neurons_2": 64,
+
+	"record_file_name": "./outputs/trans_1.csv"
+
+}
+
