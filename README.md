@@ -25,11 +25,9 @@ improve the accuracy performance (up to 7.8%), ensuring the robustness of FL in 
 
 ![overview](./overview.png)
 
-## Contents
-This repo includes the implementation of FedTrans under three different local data distributions (Dir/H2C/IID) on CIFAR10 and Fashion-MNIST datasets.
 
 ## Dependencies
-Please install the required packages first by executing the command
+Please install the required packages first by executing the command:
 ```
 pip install -r requirements.txt
 ```
