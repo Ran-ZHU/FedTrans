@@ -1,7 +1,7 @@
 <h1 align="center"> FedTrans: Client-Transparent Utility Estimation for Robust Federated Learning</h1>
 
 
-This repository is the official implementation of "[ShuffleFL: Addressing Heterogeneity in Multi-Device Federated Learning](https://openreview.net/pdf?id=DRu8PMHgCh)"
+This repository is the official implementation of "[FedTrans: Client-Transparent Utility Estimation for Robust Federated Learning](https://openreview.net/pdf?id=DRu8PMHgCh)"
 in the International Conference on Learning Representations (ICLR) 2024 
 ![Generic badge](https://img.shields.io/badge/code-official-green.svg)
 
@@ -19,7 +19,7 @@ improve the accuracy performance (up to 7.8%), ensuring the robustness of FL in 
 
 
 ## Dependencies
-Please install the required packages first by executing the command:
+Please install the required packages first by executing the command below:
 ```
 pip install -r requirements.txt
 ```
@@ -58,12 +58,11 @@ description for each parameter defined in [conf.json](./utils/conf.json):
 | ` n_neurons_1, n_neurons_2` | number of neurons of hidden layers of discriminator     |
 | ` e_iterr`                  | number of iterations of performance-based inference     |
 | ` em_iterr`                 | number of iterations of variational EM                  |
-| ` em_iterr`                 | number of iterations of variational EM                  |
 
 
 ## Citation
 
-If our work is userful for your research, please consider citing:
+If FedTrans is useful for your research, please consider citing it:
 
 ```
 @inproceedings{
